@@ -99,3 +99,14 @@ Souhaites-tu que je t’aide à démarrer concrètement avec :
 - Une **structure de projet backend**
 - Une **structure de projet Angular**
 - Ou un **exemple d'interface utilisateur (maquette)** ?
+
+---
+
+##Utils commandes
+```
+ ¬ psql -d compt_rendu -U breukh -W         // Connect to a database 
+ ¬ \l                                       // List all databases
+ ¬ \c compt_rendu                           // Switch to another database
+ ¬ \dt                                      // List database tables
+ ¬ \d                                       // Describe a table
+```
