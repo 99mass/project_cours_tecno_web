@@ -14,6 +14,6 @@ public class ReportCreationRequest {
     private String title;
     private String description;
     private Type type;
-    private String fileBase64; // Contenu du fichier en base64
-    private String fileName; // Nom original du fichier
+    private String fileBase64; 
+    private String fileName;
 }

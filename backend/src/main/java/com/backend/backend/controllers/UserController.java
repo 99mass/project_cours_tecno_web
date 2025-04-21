@@ -58,6 +58,16 @@ public class UserController {
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
 
+    @PutMapping("/me/{id}")
+    public ResponseEntity<UserResponse> updateCurrentUser(
+            @PathVariable UUID id,
+            @RequestBody UserUpdateRequest request,
+            Authentication authentication) {
+
+        return ResponseEntity.ok(userService.updateUserSelf(id, request));
+
+    }
+
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN') or @userSecurity.isUserSelf(authentication, #id)")
     public ResponseEntity<UserResponse> updateUser(
