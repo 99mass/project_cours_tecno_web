@@ -54,7 +54,7 @@ public class EmailService {
         
         helper.setFrom(fromEmail);
         helper.setTo(user.getEmail());
-        helper.setSubject("Nouveau compte rendu: " + report.getTitle());
+        helper.setSubject(report.getTitle());
         
         // Préparer le contexte pour le template
         Context context = new Context();

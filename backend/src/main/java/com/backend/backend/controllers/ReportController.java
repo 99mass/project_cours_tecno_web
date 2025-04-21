@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -39,6 +40,8 @@ import lombok.RequiredArgsConstructor;
 public class ReportController {
 
     private final ReportService reportService;
+    @Value("${file.upload-dir:uploads}")
+    private String uploadDir;
 
     @GetMapping
     public ResponseEntity<List<ReportResponse>> getAllReports(
@@ -68,7 +71,8 @@ public class ReportController {
     public ResponseEntity<Resource> downloadFile(@PathVariable UUID id) {
         ReportResponse report = reportService.getReportById(id);
         try {
-            Path filePath = Paths.get(report.getFilePath());
+            // Utilisez le répertoire d'upload avec le nom du fichier
+            Path filePath = Paths.get(uploadDir, report.getFilePath());
             ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(filePath));
 
             return ResponseEntity.ok()
