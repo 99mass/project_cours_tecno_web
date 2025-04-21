@@ -1,0 +1,58 @@
+<div class="sidebar" [class.mobile-open]="isMobileMenuOpen" @slideIn>
+  <div class="sidebar-header">
+    <h3>Menu</h3>
+    <button class="mobile-close" (click)="toggleMobileMenu()">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  
+  <div class="sidebar-content">
+    <ul class="nav-menu">
+      <!-- Admin Menu -->
+      <ng-container *ngIf="isAdmin">
+        <li class="nav-item" [class.active]="activeRoute.includes('/admin/reports')">
+          <a routerLink="/admin/reports">
+            <i class="fas fa-file-alt"></i>
+            <span>Comptes Rendus</span>
+          </a>
+        </li>
+        <li class="nav-item" [class.active]="activeRoute.includes('/admin/users')">
+          <a routerLink="/admin/users">
+            <i class="fas fa-users"></i>
+            <span>Utilisateurs</span>
+          </a>
+        </li>
+        <li class="nav-item" [class.active]="activeRoute.includes('/admin/profile')">
+          <a routerLink="/admin/profile">
+            <i class="fas fa-user"></i>
+            <span>Mon Profil</span>
+          </a>
+        </li>
+      </ng-container>
+      
+      <!-- User Menu -->
+      <ng-container *ngIf="!isAdmin">
+        <li class="nav-item" [class.active]="activeRoute.includes('/user/reports')">
+          <a routerLink="/user/reports">
+            <i class="fas fa-file-alt"></i>
+            <span>Comptes Rendus</span>
+          </a>
+        </li>
+        <li class="nav-item" [class.active]="activeRoute.includes('/user/profile')">
+          <a routerLink="/user/profile">
+            <i class="fas fa-user"></i>
+            <span>Mon Profil</span>
+          </a>
+        </li>
+      </ng-container>
+    </ul>
+  </div>
+  
+  <div class="sidebar-footer">
+    <p>© 2023 Gestion CR</p>
+  </div>
+</div>
+
+<button class="mobile-menu-toggle" (click)="toggleMobileMenu()" *ngIf="!isMobileMenuOpen">
+  <i class="fas fa-bars"></i>
+</button>

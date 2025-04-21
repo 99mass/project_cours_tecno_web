@@ -1,0 +1,30 @@
+<nav class="navbar" @fadeIn>
+  <div class="navbar-brand">
+    <a href="javascript:void(0)">
+      <span class="brand-text">Gestion des Comptes Rendus</span>
+    </a>
+  </div>
+  
+  <div class="navbar-menu">
+    <div class="notification-badge" *ngIf="newItemsCount > 0">
+      <span class="badge">{{ newItemsCount }}</span>
+      <i class="fas fa-bell"></i>
+    </div>
+    
+    <div class="user-dropdown">
+      <button class="dropdown-toggle" (click)="toggleDropdown()">
+        <span class="user-name">{{ currentUser?.name || 'Utilisateur' }}</span>
+        <i class="fas fa-chevron-down"></i>
+      </button>
+      
+      <div class="dropdown-menu" *ngIf="isDropdownOpen" @fadeIn>
+        <a class="dropdown-item" (click)="navigateToProfile()">
+          <i class="fas fa-user"></i> Mon profil
+        </a>
+        <a class="dropdown-item" (click)="logout()">
+          <i class="fas fa-sign-out-alt"></i> Déconnexion
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>

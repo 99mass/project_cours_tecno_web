@@ -1,0 +1,142 @@
+<div class="profile-container" @fadeIn>
+  <div class="page-header">
+    <h1>Mon Profil</h1>
+    <p>Gérez vos informations personnelles</p>
+  </div>
+  
+  <div class="profile-content">
+    <div class="card">
+      <div class="card-header">
+        <h2>Informations personnelles</h2>
+      </div>
+      <div class="card-body">
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmitProfile()">
+          <div class="form-group">
+            <label for="name">Nom</label>
+            <input 
+              type="text" 
+              id="name" 
+              formControlName="name" 
+              class="form-control" 
+              [class.is-invalid]="profileForm.get('name')?.invalid && profileForm.get('name')?.touched"
+            >
+            <div class="invalid-feedback" *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched">
+              <span *ngIf="profileForm.get('name')?.errors?.['required']">Le nom est requis</span>
+              <span *ngIf="profileForm.get('name')?.errors?.['minlength']">Le nom doit contenir au moins 3 caractères</span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input 
+              type="email" 
+              id="email" 
+              formControlName="email" 
+              class="form-control" 
+              [class.is-invalid]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched"
+            >
+            <div class="invalid-feedback" *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+              <span *ngIf="profileForm.get('email')?.errors?.['required']">L'email est requis</span>
+              <span *ngIf="profileForm.get('email')?.errors?.['email']">Format d'email invalide</span>
+            </div>
+          </div>
+          
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="profileForm.invalid || isSubmittingProfile">
+              <span *ngIf="isSubmittingProfile" class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+              Mettre à jour
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <div class="card mt-4">
+      <div class="card-header">
+        <h2>Sécurité</h2>
+      </div>
+      <div class="card-body">
+        <button class="btn btn-outline" (click)="togglePasswordForm()">
+          <i class="fas fa-key"></i> 
+          {{ showPasswordForm ? 'Annuler' : 'Changer mon mot de passe' }}
+        </button>
+        
+        <form *ngIf="showPasswordForm" [formGroup]="passwordForm" (ngSubmit)="onSubmitPassword()" class="mt-4">
+          <div class="form-group">
+            <label for="currentPassword">Mot de passe actuel</label>
+            <input 
+              type="password" 
+              id="currentPassword" 
+              formControlName="currentPassword" 
+              class="form-control" 
+              [class.is-invalid]="passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched"
+            >
+            <div class="invalid-feedback" *ngIf="passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched">
+              <span *ngIf="passwordForm.get('currentPassword')?.errors?.['required']">Le mot de passe actuel est requis</span>
+              <span *ngIf="passwordForm.get('currentPassword')?.errors?.['minlength']">Le mot de passe doit contenir au moins 6 caractères</span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="newPassword">Nouveau mot de passe</label>
+            <input 
+              type="password" 
+              id="newPassword" 
+              formControlName="newPassword" 
+              class="form-control" 
+              [class.is-invalid]="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched"
+            >
+            <div class="invalid-feedback" *ngIf="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched">
+              <span *ngIf="passwordForm.get('newPassword')?.errors?.['required']">Le nouveau mot de passe est requis</span>
+              <span *ngIf="passwordForm.get('newPassword')?.errors?.['minlength']">Le mot de passe doit contenir au moins 6 caractères</span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="confirmPassword">Confirmer le mot de passe</label>
+            <input 
+              type="password" 
+              id="confirmPassword" 
+              formControlName="confirmPassword" 
+              class="form-control" 
+              [class.is-invalid]="(passwordForm.get('confirmPassword')?.invalid || passwordForm.hasError('mismatch')) && passwordForm.get('confirmPassword')?.touched"
+            >
+            <div class="invalid-feedback" *ngIf="(passwordForm.get('confirmPassword')?.invalid || passwordForm.hasError('mismatch')) && passwordForm.get('confirmPassword')?.touched">
+              <span *ngIf="passwordForm.get('confirmPassword')?.errors?.['required']">La confirmation du mot de passe est requise</span>
+              <span *ngIf="passwordForm.hasError('mismatch')">Les mots de passe ne correspondent pas</span>
+            </div>
+          </div>
+          
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" [disabled]="passwordForm.invalid || isSubmittingPassword">
+              <span *ngIf="isSubmittingPassword" class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+              Changer le mot de passe
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    
+    <div class="card mt-4">
+      <div class="card-header">
+        <h2>Informations du compte</h2>
+      </div>
+      <div class="card-body">
+        <div class="account-info">
+          <div class="info-item">
+            <span class="info-label">Rôle</span>
+            <span class="info-value">{{ currentUser?.role }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Créé le</span>
+            <span class="info-value">{{ currentUser?.createdAt | date:'dd/MM/yyyy' }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Dernière mise à jour</span>
+            <span class="info-value">{{ currentUser?.updatedAt | date:'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

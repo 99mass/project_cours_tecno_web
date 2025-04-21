@@ -110,3 +110,9 @@ Souhaites-tu que je t’aide à démarrer concrètement avec :
  ¬ \dt                                      // List database tables
  ¬ \d                                       // Describe a table
 ```
+
+## Default Admin
+```
+superadmin@example.com
+superadmin123
+```

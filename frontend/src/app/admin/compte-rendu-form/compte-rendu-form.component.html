@@ -1,0 +1,140 @@
+<div class="compte-rendu-container" @fadeIn>
+  <div class="page-header">
+    <h1>{{ isEditMode ? 'Modifier un compte rendu' : 'Gestion des comptes rendus' }}</h1>
+    <p>{{ isEditMode ? 'Modifiez les informations du compte rendu' : 'Ajoutez, modifiez ou supprimez des comptes rendus' }}</p>
+  </div>
+  
+  <div class="content-grid">
+    <div class="form-section">
+      <div class="card">
+        <div class="card-header">
+          <h2>{{ isEditMode ? 'Modifier le compte rendu' : 'Ajouter un compte rendu' }}</h2>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="compteRenduForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+              <label for="titre">Titre</label>
+              <input 
+                type="text" 
+                id="titre" 
+                formControlName="titre" 
+                class="form-control" 
+                [class.is-invalid]="compteRenduForm.get('titre')?.invalid && compteRenduForm.get('titre')?.touched"
+              >
+              <div class="invalid-feedback" *ngIf="compteRenduForm.get('titre')?.invalid && compteRenduForm.get('titre')?.touched">
+                <span *ngIf="compteRenduForm.get('titre')?.errors?.['required']">Le titre est requis</span>
+                <span *ngIf="compteRenduForm.get('titre')?.errors?.['minlength']">Le titre doit contenir au moins 3 caractères</span>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="description">Description</label>
+              <textarea 
+                id="description" 
+                formControlName="description" 
+                class="form-control" 
+                rows="4"
+                [class.is-invalid]="compteRenduForm.get('description')?.invalid && compteRenduForm.get('description')?.touched"
+              ></textarea>
+              <div class="invalid-feedback" *ngIf="compteRenduForm.get('description')?.invalid && compteRenduForm.get('description')?.touched">
+                <span *ngIf="compteRenduForm.get('description')?.errors?.['required']">La description est requise</span>
+                <span *ngIf="compteRenduForm.get('description')?.errors?.['minlength']">La description doit contenir au moins 10 caractères</span>
+              </div>
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="type">Type</label>
+                <select 
+                  id="type" 
+                  formControlName="type" 
+                  class="form-control"
+                >
+                  <option *ngFor="let type of compteRenduTypes" [value]="type">{{ type }}</option>
+                </select>
+              </div>
+              
+              <div class="form-group">
+                <label for="date">Date</label>
+                <input 
+                  type="date" 
+                  id="date" 
+                  formControlName="date" 
+                  class="form-control"
+                >
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="file">Fichier PDF</label>
+              <div class="file-upload">
+                <input 
+                  type="file" 
+                  id="file" 
+                  (change)="onFileSelected($event)" 
+                  accept=".pdf"
+                  [required]="!isEditMode"
+                >
+                <div class="file-info" *ngIf="selectedFile">
+                  <i class="fas fa-file-pdf"></i>
+                  <span>{{ selectedFile.name }}</span>
+                </div>
+              </div>
+              <small class="form-text text-muted" *ngIf="isEditMode">Laissez vide pour conserver le fichier actuel</small>
+            </div>
+            
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" (click)="resetForm()">
+                {{ isEditMode ? 'Annuler' : 'Réinitialiser' }}
+              </button>
+              <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+                <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+                {{ isEditMode ? 'Mettre à jour' : 'Ajouter' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    
+    <div class="list-section">
+      <div class="card">
+        <div class="card-header">
+          <h2>Liste des comptes rendus</h2>
+        </div>
+        <div class="card-body">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Rechercher un compte rendu..." />
+          </div>
+          
+          <div class="empty-state" *ngIf="comptesRendus.length === 0">
+            <i class="fas fa-file-alt empty-icon"></i>
+            <h3>Aucun compte rendu</h3>
+            <p>Ajoutez votre premier compte rendu</p>
+          </div>
+          
+          <div class="compte-rendu-list" *ngIf="comptesRendus.length > 0">
+            <div class="compte-rendu-item" *ngFor="let cr of comptesRendus">
+              <div class="item-info">
+                <h3>{{ cr.titre }}</h3>
+                <div class="item-meta">
+                  <span class="type-badge">{{ cr.type }}</span>
+                  <span class="date">{{ cr.date | date:'dd/MM/yyyy' }}</span>
+                </div>
+              </div>
+              <div class="item-actions">
+                <button class="btn-icon" (click)="editCompteRendu(cr.id!)">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn-icon delete" (click)="deleteCompteRendu(cr.id!)">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,65 @@
+<div class="reports-container" @fadeIn>
+  <div class="page-header">
+    <h1>Comptes Rendus</h1>
+    <p>Consultez et téléchargez les comptes rendus disponibles</p>
+  </div>
+  
+  <div class="filter-section">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input 
+        type="text" 
+        placeholder="Rechercher un compte rendu..." 
+        [(ngModel)]="searchTerm"
+        (input)="search()"
+      />
+    </div>
+    
+    <div class="filter-buttons">
+      <button 
+        class="filter-btn" 
+        [class.active]="selectedType === null"
+        (click)="filterByType(null)"
+      >
+        Tous
+      </button>
+      <button 
+        *ngFor="let type of reportTypes"
+        class="filter-btn" 
+        [class.active]="selectedType === type"
+        (click)="filterByType(type)"
+      >
+        {{ type }}
+      </button>
+    </div>
+  </div>
+  
+  <div class="reports-grid">
+    <div class="empty-state" *ngIf="filteredReports.length === 0 && !isLoading">
+      <i class="fas fa-file-alt empty-icon"></i>
+      <h3>Aucun compte rendu disponible</h3>
+      <p *ngIf="searchTerm || selectedType">Aucun résultat pour les filtres sélectionnés</p>
+      <p *ngIf="!searchTerm && !selectedType">Les comptes rendus ajoutés apparaîtront ici</p>
+    </div>
+    
+    <div class="report-card" *ngFor="let report of filteredReports" (click)="downloadFile(report)">
+      <div class="card-header">
+        <i class="fas fa-file-pdf file-icon"></i>
+        <span class="new-badge" *ngIf="isReportNew(report.id!)">Nouveau</span>
+      </div>
+      <div class="card-body">
+        <h3>{{ report.title }}</h3>
+        <p class="description">{{ report.description }}</p>
+        <div class="card-meta">
+          <span class="type-badge">{{ report.type }}</span>
+          <span class="date">{{ report.createdAt | date:'dd/MM/yyyy' }}</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <button class="download-btn">
+          <i class="fas fa-download"></i> Télécharger
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
