@@ -14,6 +14,10 @@ Le projet est construit selon une architecture en trois couches:
 
 ## 💾 Modèle de données
 
+### 📊 Diagramme des entités
+
+![Diagramme des entités](https://github.com/99mass/project_cours_tecno_web/blob/master/diagrammes/diagramme-des-entites.png)
+
 ### 📄 Entités principales
 
 #### User
