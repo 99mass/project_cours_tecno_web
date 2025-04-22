@@ -1,8 +1,8 @@
 import { Component, OnInit } from "@angular/core";
 import { trigger, transition, style, animate } from "@angular/animations";
-import { CompteRenduService } from "../../core/services/compte-rendu.service";
+import { ReportService } from "../../core/services/report.service";
 import { NotificationService } from "../../core/services/notification.service";
-import { CompteRendu } from "../../core/models/compte-rendu.model";
+import { Report, Type } from "../../core/models/report.model";
 import { RouterOutlet } from "@angular/router";
 import { NavbarComponent } from "../../shared/navbar/navbar.component";
 import { SidebarComponent } from "../../shared/sidebar/sidebar.component";
@@ -18,80 +18,88 @@ import { CommonModule } from "@angular/common";
   standalone: true,
   imports: [
     RouterOutlet,
-    // Ajoutez les composants importés ci-dessus
     CommonModule,
     SidebarComponent,
     NavbarComponent
   ]
 })
 export class UserDashboardComponent implements OnInit {
-  comptesRendus: CompteRendu[] = [];
-  newComptesRendus: CompteRendu[] = [];
+  reports: Report[] = [];
+  newReports: Report[] = [];
   isLoading = false;
 
   constructor(
-    private compteRenduService: CompteRenduService,
+    private reportService: ReportService,
     private notificationService: NotificationService,
   ) { }
 
   ngOnInit(): void {
-    this.loadComptesRendus();
-    this.checkNewComptesRendus();
+    this.loadReports();
+    this.checkNewReports();
   }
 
-  loadComptesRendus(): void {
+  loadReports(): void {
     this.isLoading = true;
-    this.compteRenduService.getAll().subscribe({
+    this.reportService.getAll().subscribe({
       next: (data) => {
-        this.comptesRendus = data;
+        this.reports = data;
         this.isLoading = false;
       },
       error: (error) => {
+        console.error("Error loading reports:", error);
         this.notificationService.showError("Erreur lors du chargement des comptes rendus");
         this.isLoading = false;
       },
     });
   }
 
-  checkNewComptesRendus(): void {
-    this.compteRenduService.getByType("NOUVEAU" as any).subscribe({
+  checkNewReports(): void {
+    this.reportService.getNewReports().subscribe({
       next: (data) => {
-        this.newComptesRendus = data;
+        this.newReports = data;
         this.notificationService.updateNewItemsCount(data.length);
 
         if (data.length > 0) {
           this.notificationService.showInfo(`${data.length} nouveau(x) compte(s) rendu(s) disponible(s)`);
         }
       },
+      error: (error) => {
+        console.error("Error checking new reports:", error);
+      }
     });
   }
 
-  markAsRead(id: number): void {
-    this.compteRenduService.markAsRead(id).subscribe({
+  markAsRead(id: string): void {
+    this.reportService.markAsRead(id).subscribe({
       next: () => {
-        this.checkNewComptesRendus();
-        this.loadComptesRendus();
+        this.checkNewReports();
+        this.loadReports();
       },
+      error: (error) => {
+        console.error("Error marking report as read:", error);
+        this.notificationService.showError("Erreur lors du marquage comme lu");
+      }
     });
   }
 
-  downloadFile(compteRendu: CompteRendu): void {
-    this.compteRenduService.downloadFile(compteRendu.cheminFichier).subscribe({
+  downloadFile(report: Report): void {
+    this.reportService.downloadFile(report.id!).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = `${compteRendu.titre}.pdf`;
+        a.download = `${report.title}.pdf`;
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
 
-        if (compteRendu.isNouveau) {
-          this.markAsRead(compteRendu.id!);
+        if (report.isNew) {
+          this.markAsRead(report.id!);
         }
       },
-      error: () => {
+      error: (error) => {
+        console.error("Error downloading file:", error);
         this.notificationService.showError("Erreur lors du téléchargement du fichier");
       },
     });

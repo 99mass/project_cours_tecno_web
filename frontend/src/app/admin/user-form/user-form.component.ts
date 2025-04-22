@@ -37,15 +37,16 @@ export class UserFormComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.initForm();
-
     this.route.params.subscribe((params) => {
       if (params["id"]) {
         this.isEditMode = true;
         this.userId = params["id"];
+        this.initForm(); 
         if (this.userId) {
           this.loadUser(this.userId);
         }
+      } else {
+        this.initForm();
       }
     });
   }

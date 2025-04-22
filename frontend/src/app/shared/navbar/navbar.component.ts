@@ -34,7 +34,7 @@ export class NavbarComponent implements OnInit {
     private userService: UserService,
     private router: Router,
     private notificationService: NotificationService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.userService.currentUser$.subscribe((user) => {
@@ -48,8 +48,6 @@ export class NavbarComponent implements OnInit {
 
   logout(): void {
     this.authService.logout()
-    this.notificationService.showInfo("Vous avez été déconnecté")
-    this.router.navigate(["/login"])
   }
 
   toggleDropdown(): void {

@@ -10,6 +10,7 @@ import { ProfileComponent } from "./shared/profile/profile.component";
 import { AuthGuard } from "./core/guards/auth.guard";
 import { AdminGuard } from "./core/guards/admin.guard";
 import { ReportListComponent } from "./shared/report-list/report-list.component";
+import { ReportViewComponent } from "./shared/ReportViewComponent/report-view.component";
 
 export const routes: Routes = [
     { path: "", redirectTo: "/login", pathMatch: "full" },
@@ -38,5 +39,6 @@ export const routes: Routes = [
             { path: "profile", component: ProfileComponent },
         ],
     },
+    { path: 'reports/view/:id', component: ReportViewComponent, canActivate: [AuthGuard] },
     { path: "**", component: NotFoundComponent },
 ];

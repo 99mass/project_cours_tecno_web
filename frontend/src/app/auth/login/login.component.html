@@ -37,7 +37,9 @@
           <span *ngIf="loginForm.get('password')?.errors?.['minlength']">Le mot de passe doit contenir au moins 6 caractères</span>
         </div>
       </div>
-      
+      <div class="alert alert-danger" *ngIf="errorMessage">
+        {{ errorMessage }}
+      </div>
       <button 
         type="submit" 
         class="btn btn-primary btn-block" 

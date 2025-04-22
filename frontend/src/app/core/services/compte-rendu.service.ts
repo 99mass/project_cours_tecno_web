@@ -8,7 +8,7 @@ import { environment } from "../../../environments/environment"
   providedIn: "root",
 })
 export class CompteRenduService {
-  private apiUrl = `${environment.apiUrl}/comptes-rendus`
+  private apiUrl = `${environment.apiUrl}/reports`
 
   constructor(private http: HttpClient) {}
 

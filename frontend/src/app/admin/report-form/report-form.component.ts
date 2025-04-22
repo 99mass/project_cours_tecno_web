@@ -13,11 +13,11 @@ import { CommonModule, DatePipe } from "@angular/common"
   styleUrls: ["./report-form.component.scss"],
   standalone: true,
   imports: [
-    CommonModule,       // Pour NgIf, NgFor, NgClass
-    ReactiveFormsModule, // Pour formGroup, formControlName
-    FormsModule,        // Pour ngModel
-    RouterModule,       // Pour routerLink
-    DatePipe           // Pour le pipe date
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    RouterModule,
+    DatePipe
   ],
   animations: [
     trigger("fadeIn", [transition(":enter", [style({ opacity: 0 }), animate("0.4s ease-out", style({ opacity: 1 }))])]),
@@ -33,6 +33,7 @@ export class ReportFormComponent implements OnInit {
   isSubmitting = false
   searchTerm = ""
   filteredReports: Report[] = []
+  isFormVisible = false // Variable pour contrôler la visibilité du formulaire
 
   constructor(
     private fb: FormBuilder,
@@ -40,7 +41,7 @@ export class ReportFormComponent implements OnInit {
     private notificationService: NotificationService,
     private route: ActivatedRoute,
     private router: Router,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.initForm()
@@ -50,6 +51,7 @@ export class ReportFormComponent implements OnInit {
       if (params["id"]) {
         this.isEditMode = true
         this.reportId = params["id"]
+        this.isFormVisible = true // Toujours afficher le formulaire en mode édition
         if (this.reportId) {
           this.loadReport(this.reportId)
         }
@@ -138,6 +140,8 @@ export class ReportFormComponent implements OnInit {
             this.loadReports()
             this.resetForm()
             this.isSubmitting = false
+            // Rediriger vers la page principale après mise à jour
+            this.router.navigate(['/admin/reports'])
           },
           error: () => {
             this.notificationService.showError("Erreur lors de la mise à jour du compte rendu")
@@ -165,6 +169,8 @@ export class ReportFormComponent implements OnInit {
             this.loadReports()
             this.resetForm()
             this.isSubmitting = false
+            // Masquer le formulaire après l'ajout
+            this.isFormVisible = false
           },
           error: () => {
             this.notificationService.showError("Erreur lors de l'ajout du compte rendu")
@@ -183,8 +189,13 @@ export class ReportFormComponent implements OnInit {
       type: Type.MEETING,
     })
     this.selectedFile = null
-    this.isEditMode = false
-    this.reportId = undefined
+
+    if (this.isEditMode) {
+      // Si on était en mode édition, revenir à la page principale
+      this.isEditMode = false
+      this.reportId = undefined
+      this.router.navigate(['/admin/reports'])
+    }
   }
 
   deleteReport(id: string): void {
@@ -203,6 +214,11 @@ export class ReportFormComponent implements OnInit {
 
   editReport(id: string): void {
     this.router.navigate(["/admin/reports/edit", id])
+  }
+
+  // Nouvelle méthode pour visualiser le rapport
+  viewReport(id: string): void {
+    this.router.navigate(["/reports/view", id])
   }
 
   sendReportByEmail(id: string): void {
@@ -251,5 +267,9 @@ export class ReportFormComponent implements OnInit {
     this.filteredReports = this.reports.filter(
       (report) => report.title.toLowerCase().includes(term) || report.description.toLowerCase().includes(term),
     )
+  }
+
+  toggleFormVisibility(): void {
+    this.isFormVisible = !this.isFormVisible
   }
 }

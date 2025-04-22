@@ -217,6 +217,46 @@
   color: #888;
   text-align: center;
 }
+.btn-group {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.view-btn, .download-btn {
+  flex: 1;
+  padding: 8px 0;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.view-btn {
+  background-color: #f39c12;
+  color: white;
+}
+
+.view-btn:hover {
+  background-color: #e67e22;
+}
+
+.download-btn {
+  background-color: #3498db;
+  color: white;
+}
+
+.download-btn:hover {
+  background-color: #2980b9;
+}
+
+.view-btn i, .download-btn i {
+  margin-right: 5px;
+}
 
 @media (max-width: 768px) {
   .filter-section {

@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core"
 import { HttpClient } from "@angular/common/http"
-import { BehaviorSubject, Observable, throwError } from "rxjs"
+import { BehaviorSubject, Observable, of, throwError } from "rxjs"
 import { catchError, tap } from "rxjs/operators"
 import { User, Role } from "../models/user.model"
 import { AuthRequest, AuthResponse } from "../models/auth.model"
@@ -37,16 +37,40 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem("token")
-    localStorage.removeItem("tokenExpiration")
-    localStorage.removeItem("userRole")
-    this.currentUserSubject.next(null)
-    this.router.navigate(["/login"])
+    // D'abord envoyer une requête de déconnexion au serveur
+    this.http.post(`${this.apiUrl}/logout`, {}).pipe(
+      catchError(error => {
+        console.log('Erreur lors de la déconnexion', error);
+        return of(null);
+      })
+    ).subscribe(() => {
+      this.completeLogout();
+    });
+  }
+
+  private completeLogout(): void {
+    // Nettoyer complètement le localStorage
+    localStorage.removeItem("token");
+    localStorage.removeItem("tokenExpiration");
+    localStorage.removeItem("userRole");
+
+    // Vider tous les caches HTTP potentiels
+    if (window.caches) {
+      caches.keys().then(keyList => {
+        return Promise.all(keyList.map(key => {
+          return caches.delete(key);
+        }));
+      });
+    }
+
+    this.currentUserSubject.next(null);
 
     if (this.tokenExpirationTimer) {
-      clearTimeout(this.tokenExpirationTimer)
+      clearTimeout(this.tokenExpirationTimer);
     }
-    this.tokenExpirationTimer = null
+    this.tokenExpirationTimer = null;
+
+    window.location.href = '/login';
   }
 
   isLoggedIn(): boolean {
@@ -71,8 +95,6 @@ export class AuthService {
   }
 
   private setAuthData(authResponse: AuthResponse): void {
-    console.log("Setting auth data:", authResponse);
-    
     // Store token
     localStorage.setItem("token", authResponse.token)
 
@@ -88,8 +110,8 @@ export class AuthService {
 
     // Create a minimal user object from auth response
     const user: User = {
-      name: "", // Will be populated later from user service
-      email: "", // Will be populated later from user service
+      name: "", 
+      email: "", 
       role: authResponse.role,
     }
 
@@ -118,8 +140,8 @@ export class AuthService {
       if (token && role && !this.isTokenExpired()) {
         // Create a minimal user object
         const user: User = {
-          name: "", // Will be populated later from user service
-          email: "", // Will be populated later from user service
+          name: "", 
+          email: "", 
           role: role,
         }
 

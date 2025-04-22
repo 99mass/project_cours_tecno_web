@@ -42,9 +42,12 @@ export const appConfig: ApplicationConfig = {
     provideToastr({
       timeOut: 3000,
       positionClass: 'toast-top-right',
-      preventDuplicates: true,
+      preventDuplicates: true,      
+      resetTimeoutOnDuplicate: true,
       progressBar: true,
       closeButton: true,
+      tapToDismiss: true,       
+      newestOnTop: true     
     })
   ]
 };

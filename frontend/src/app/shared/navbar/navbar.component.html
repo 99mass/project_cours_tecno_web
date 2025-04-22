@@ -6,11 +6,7 @@
   </div>
   
   <div class="navbar-menu">
-    <div class="notification-badge" *ngIf="newItemsCount > 0">
-      <span class="badge">{{ newItemsCount }}</span>
-      <i class="fas fa-bell"></i>
-    </div>
-    
+
     <div class="user-dropdown">
       <button class="dropdown-toggle" (click)="toggleDropdown()">
         <span class="user-name">{{ currentUser?.name || 'Utilisateur' }}</span>

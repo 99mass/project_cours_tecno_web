@@ -28,6 +28,7 @@ import { trigger, transition, style, animate } from "@angular/animations";
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
   isSubmitting = false;
+  errorMessage: string = '';
 
   constructor(
     private fb: FormBuilder,
@@ -53,22 +54,33 @@ export class LoginComponent implements OnInit {
     }
 
     this.isSubmitting = true;
+    this.errorMessage = ''; // Reset error message
     const { email, password } = this.loginForm.value;
 
     this.authService.login(email, password).subscribe({
       next: (authResponse) => {
-        console.log("Setting auth data:", authResponse)
         localStorage.setItem("token", authResponse.token)
         localStorage.setItem("userRole", authResponse.role)
 
         const expirationDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000)
         localStorage.setItem("tokenExpiration", expirationDate.toISOString())
 
-        // this.router.navigate(["/admin"])
-        window.location.href = "/admin"
+        if (this.authService.isAdmin()) {
+          this.router.navigate(["/admin"]);
+        } else {
+          this.router.navigate(["/user"]);
+          
+        }
       },
       error: (error) => {
-        this.isSubmitting = false
+        this.isSubmitting = false;
+        // Afficher le message d'erreur retourné par l'API 
+        if (error.error && error.error.message) {
+          this.errorMessage = error.error.message;
+        } else {
+          this.errorMessage = "Échec de connexion. Veuillez vérifier vos identifiants.";
+        }
+        this.notificationService.showError(this.errorMessage);
       }
     })
 

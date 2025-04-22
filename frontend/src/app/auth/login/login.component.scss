@@ -1,10 +1,14 @@
+body {
+  overflow: hidden;
+}
+
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
+  background: url('../../../../public/images/login-bg.png') no-repeat center center fixed;
+  background-size: cover;
 }
 
 .login-card {
@@ -78,6 +82,19 @@ label {
   color: #dc3545;
 }
 
+.alert {
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+
+.alert-danger {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+
 .btn {
   display: inline-block;
   font-weight: 500;
@@ -132,5 +149,7 @@ label {
 }
 
 @keyframes spinner-border {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }

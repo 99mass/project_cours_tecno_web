@@ -1,7 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
-
+@import 'ngx-toastr/toastr';
 *{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+.toast-container {
+    z-index: 9999 !important;
+  }
+
+  .toast-close-button {
+    opacity: 1 !important;
+  }
+  
+  

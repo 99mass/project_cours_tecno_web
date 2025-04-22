@@ -5,6 +5,7 @@ import { Report, Type } from "../../core/models/report.model";
 import { trigger, transition, style, animate } from "@angular/animations";
 import { NgIf, NgFor, DatePipe } from "@angular/common";
 import { FormsModule } from "@angular/forms";
+import { Router } from "@angular/router";
 
 @Component({
   selector: "app-report-list",
@@ -30,10 +31,12 @@ export class ReportListComponent implements OnInit {
   selectedType: Type | null = null;
   reportTypes = Object.values(Type);
 
+
   constructor(
     private reportService: ReportService,
     private notificationService: NotificationService,
-  ) {}
+    private router: Router,
+  ) { }
 
   ngOnInit(): void {
     this.loadReports();
@@ -105,7 +108,21 @@ export class ReportListComponent implements OnInit {
     });
   }
 
-  downloadFile(report: Report): void {
+  viewReport(report: Report, event: Event): void {
+    event.stopPropagation();
+    this.router.navigate(['/reports/view', report.id]);
+
+    if (report.isNew) {
+      this.markAsRead(report.id!);
+    }
+  }
+
+
+  downloadFile(report: Report, event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+
     this.reportService.downloadFile(report.id!).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
