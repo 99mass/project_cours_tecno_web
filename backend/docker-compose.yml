@@ -15,10 +15,10 @@ services:
       - 8081:8080
     restart: unless-stopped
     volumes:
-      - ./uploads:/uploads  #
+      - ./uploads:/uploads #
 
   db:
-    image: postgres
+    image: postgres:16
     container_name: db
     environment:
       - POSTGRES_USER=breukh

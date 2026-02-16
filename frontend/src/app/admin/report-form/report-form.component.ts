@@ -199,16 +199,17 @@ export class ReportFormComponent implements OnInit {
   }
 
   deleteReport(id: string): void {
-    if (confirm("Êtes-vous sûr de vouloir supprimer ce compte rendu ?")) {
+    // Amélioration HCI : Confirmation explicite avant suppression définitive
+    if (confirm("⚠️ Attention : Cette action est irréversible.\n\nVoulez-vous vraiment supprimer ce compte rendu ?")) {
       this.reportService.delete(id).subscribe({
         next: () => {
-          this.notificationService.showSuccess("Compte rendu supprimé avec succès")
-          this.loadReports()
+          this.notificationService.showSuccess("Compte rendu supprimé avec succès");
+          this.loadReports();
         },
         error: () => {
-          this.notificationService.showError("Erreur lors de la suppression du compte rendu")
+          this.notificationService.showError("Erreur lors de la suppression du compte rendu");
         },
-      })
+      });
     }
   }
 
